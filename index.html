@@ -7,16 +7,21 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    min-height: 100vh;
+  html, body {
+    min-height: 100%;
     font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  }
+
+  body {
     background: linear-gradient(135deg, #e0f2fe 0%, #ffffff 45%, #bae6fd 100%);
     background-attachment: fixed;
     position: relative;
-    padding: 50px 24px 90px;
+    padding: 60px 24px 100px;
+    color: #0c4a6e;
+    overflow-x: hidden;
   }
 
-  /* плавающие иконки */
+  /* ---------- Фон: плавающие SVG-фигуры (без эмодзи) ---------- */
   #floatingBg {
     position: fixed; inset: 0;
     pointer-events: none;
@@ -25,105 +30,211 @@
   }
   .float-item {
     position: absolute;
-    user-select: none;
-    filter: drop-shadow(0 3px 6px rgba(14,165,233,.25));
-    animation: floaty ease-in-out infinite;
     will-change: transform;
+    animation: floaty ease-in-out infinite;
+  }
+  .float-item svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(14,165,233,.18));
   }
   @keyframes floaty {
     0%,100% { transform: translate(0,0) rotate(0deg); }
-    25%     { transform: translate(25px,-35px) rotate(12deg); }
-    50%     { transform: translate(-20px,25px) rotate(-10deg); }
-    75%     { transform: translate(30px,15px) rotate(6deg); }
+    25%     { transform: translate(22px,-30px) rotate(9deg); }
+    50%     { transform: translate(-18px,22px) rotate(-8deg); }
+    75%     { transform: translate(26px,12px) rotate(5deg); }
   }
 
+  /* ---------- Контент ---------- */
   .container {
-    position: relative; z-index: 1;
-    max-width: 1100px;
+    position: relative;
+    z-index: 1;
+    max-width: 1080px;
     margin: 0 auto;
   }
 
-  h1 {
+  .page-header {
     text-align: center;
+    margin-bottom: 40px;
+  }
+  h1 {
     color: #075985;
-    font-size: clamp(30px, 5vw, 48px);
+    font-size: clamp(30px, 4.6vw, 46px);
     font-weight: 800;
-    margin-bottom: 14px;
-    text-shadow: 0 2px 8px rgba(255,255,255,.9);
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 10px rgba(255,255,255,.9);
   }
   .subtitle {
-    text-align: center;
-    color: #0c4a6e;
-    opacity: .7;
-    margin-bottom: 48px;
+    color: #0369a1;
+    opacity: .75;
     font-size: 16px;
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.5;
   }
 
-  /* контейнер всех групп */
+  /* Вводная подсказка */
+  .tip {
+    max-width: 680px;
+    margin: 0 auto 52px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: rgba(255,255,255,.72);
+    border: 1px dashed rgba(2,132,199,.4);
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #0c4a6e;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .tip svg {
+    flex-shrink: 0;
+    width: 20px; height: 20px;
+    color: #0284c7;
+  }
+
+  /* ---------- Группы ---------- */
   .groups {
     display: grid;
-    gap: 44px;
+    gap: 48px;
   }
 
-  .group-title {
-    font-size: 15px;
+  .group-head {
+    padding-left: 6px;
+    margin-bottom: 18px;
+    border-left: 3px solid #38bdf8;
+  }
+  .group-head h2 {
+    font-size: 19px;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    color: #0284c7;
-    margin-bottom: 16px;
-    padding-left: 4px;
+    color: #075985;
+    letter-spacing: .01em;
+    margin: 0 0 4px 10px;
+  }
+  .group-head p {
+    font-size: 14px;
+    color: #64748b;
+    margin-left: 10px;
+    line-height: 1.4;
   }
 
-  /* Сетка карточек: авто-адаптив */
+  /* ---------- Карточки ---------- */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: 1fr;
     gap: 16px;
+  }
+  @media (min-width: 780px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
   }
 
   .card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 14px;
-    min-height: 130px;
-    padding: 22px 24px;
-    background: rgba(255,255,255,.82);
+    position: relative;
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 16px;
+    row-gap: 6px;
+    padding: 20px 22px;
+    background: rgba(255,255,255,.86);
     border: 1px solid rgba(125,211,252,.7);
-    border-radius: 18px;
-    color: #0369a1;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.35;
+    border-radius: 16px;
     text-decoration: none;
-    box-shadow: 0 6px 20px rgba(14,165,233,.13);
+    color: #0c4a6e;
+    box-shadow: 0 6px 20px rgba(14,165,233,.12);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    transition: transform .25s ease, box-shadow .25s ease, background .25s ease, color .25s ease;
+    transition: transform .25s ease, box-shadow .25s ease,
+                border-color .25s ease, background .25s ease;
+    overflow: hidden;
   }
 
-  .card::after {
-    content: 'Открыть PDF →';
-    font-size: 12px;
-    font-weight: 600;
-    color: #38bdf8;
-    letter-spacing: .03em;
+  /* акцентная полоса слева при наведении */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #38bdf8, #0284c7);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform .3s ease;
   }
+  .card:hover::before { transform: scaleY(1); }
+
+  /* стрелка в углу при наведении */
+  .card::after {
+    content: '→';
+    position: absolute;
+    top: 16px; right: 18px;
+    font-size: 18px;
+    color: #38bdf8;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  .card:hover::after { opacity: 1; transform: translateX(0); }
 
   .card:hover {
-    background: #0284c7;
+    transform: translateY(-4px);
     border-color: #0284c7;
-    color: #fff;
-    transform: translateY(-5px);
-    box-shadow: 0 14px 30px rgba(2,132,199,.32);
+    box-shadow: 0 14px 32px rgba(2,132,199,.28);
+    background: rgba(255,255,255,.96);
   }
-  .card:hover::after { color: #e0f2fe; }
+  .card:active { transform: translateY(-1px); }
 
-  .card:active { transform: translateY(-2px); }
+  .card-icon {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    align-self: start;
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0284c7;
+    transition: background .25s ease, color .25s ease;
+  }
+  .card-icon svg {
+    width: 26px; height: 26px;
+    stroke-width: 1.8;
+  }
+  .card:hover .card-icon {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #e0f2fe;
+  }
 
-  @media (max-width: 520px) {
-    .cards { grid-template-columns: 1fr; }
+  .card-title {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 15.5px;
+    font-weight: 700;
+    line-height: 1.3;
+    padding-right: 20px;
+    transition: color .25s ease;
+  }
+  .card-hint {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.45;
+  }
+  .card:hover .card-title { color: #0369a1; }
+
+  .note {
+    text-align: center;
+    margin-top: 56px;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
   }
 </style>
 </head>
@@ -132,60 +243,255 @@
 <div id="floatingBg"></div>
 
 <div class="container">
-  <h1>Схемы бизнес-процессов</h1>
-  <p class="subtitle">Выберите раздел, чтобы открыть PDF-схему</p>
+
+  <header class="page-header">
+    <h1>Схемы бизнес-процессов</h1>
+    <p class="subtitle">
+      Материалы сгруппированы по направлениям. Выберите нужную схему, чтобы открыть её в новой вкладке.
+    </p>
+  </header>
+
+  <div class="tip">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="11" x2="12" y2="16"/>
+      <circle cx="12" cy="8" r="0.6" fill="currentColor"/>
+    </svg>
+    <span>Все документы представлены в формате PDF и открываются в новой вкладке браузера.</span>
+  </div>
 
   <div class="groups">
 
-    <!-- ГРУППА 1 -->
-    <section>
-      <div class="group-title">Фонды</div>
+    <!-- ================= ГРУППА 1 ================= -->
+    <section class="group">
+      <div class="group-head">
+        <h2>Фонды</h2>
+        <p>Процессы управления фондами и связанные с ними документы</p>
+      </div>
+
       <div class="cards">
-        <a class="card" href="pdf/bank-documents.pdf" target="_blank" rel="noopener">Банк документов</a>
-        <a class="card" href="pdf/arm-admin-funds.pdf" target="_blank" rel="noopener">АРМ администратора фондов</a>
-        <a class="card" href="pdf/subsystem-funds.pdf" target="_blank" rel="noopener">Подсистема ведения фондов</a>
-        <a class="card" href="pdf/monitoring.pdf" target="_blank" rel="noopener">Мониторинг Системы</a>
+
+        <a class="card" href="pdf/bank-documents.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+              <path d="M14 3v6h6"/>
+              <line x1="8" y1="13" x2="16" y2="13"/>
+              <line x1="8" y1="17" x2="14" y2="17"/>
+            </svg>
+          </div>
+          <div class="card-title">Банк документов</div>
+          <div class="card-hint">Реестр и хранилище документов системы</div>
+        </a>
+
+        <a class="card" href="pdf/arm-admin-funds.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="10" cy="8" r="3.5"/>
+              <path d="M3 20a7 7 0 0 1 14 0"/>
+              <circle cx="19" cy="6" r="2.2"/>
+            </svg>
+          </div>
+          <div class="card-title">АРМ администратора фондов</div>
+          <div class="card-hint">Рабочее место администратора и настройки фондов</div>
+        </a>
+
+        <a class="card" href="pdf/subsystem-funds.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3l9 5-9 5-9-5 9-5z"/>
+              <path d="M3 12l9 5 9-5"/>
+              <path d="M3 16l9 5 9-5"/>
+            </svg>
+          </div>
+          <div class="card-title">Подсистема ведения фондов</div>
+          <div class="card-hint">Учёт фондов, операции и статусы</div>
+        </a>
+
+        <a class="card" href="pdf/monitoring.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12h4l3-8 4 16 3-8h4"/>
+            </svg>
+          </div>
+          <div class="card-title">Мониторинг Системы</div>
+          <div class="card-hint">Отслеживание состояния и метрик работы</div>
+        </a>
+
       </div>
     </section>
 
-    <!-- ГРУППА 2 -->
-    <section>
-      <div class="group-title">Нормативные документы</div>
+    <!-- ================= ГРУППА 2 ================= -->
+    <section class="group">
+      <div class="group-head">
+        <h2>Нормативные документы</h2>
+        <p>Полный цикл работы с нормативной документацией</p>
+      </div>
+
       <div class="cards">
-        <a class="card" href="pdf/arm-nsi.pdf" target="_blank" rel="noopener">Подсистема управления нормативно-справочной информацией</a>
-        <a class="card" href="pdf/planning-norm-docs.pdf" target="_blank" rel="noopener">Планирование разработки нормативных документов</a>
-        <a class="card" href="pdf/discussion-norm-docs.pdf" target="_blank" rel="noopener">Обсуждение нормативных документов</a>
-        <a class="card" href="pdf/constructor-norm-docs.pdf" target="_blank" rel="noopener">Конструктор нормативных документов</a>
+
+        <a class="card" href="pdf/arm-nsi.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4v16a2 2 0 0 0 2 2h14V2H6a2 2 0 0 0-2 2z"/>
+              <path d="M4 18a2 2 0 0 1 2-2h14"/>
+            </svg>
+          </div>
+          <div class="card-title">Подсистема управления нормативно-справочной информацией</div>
+          <div class="card-hint">Ведение справочников и классификаторов</div>
+        </a>
+
+        <a class="card" href="pdf/planning-norm-docs.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="16" rx="2"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <line x1="8" y1="3" x2="8" y2="7"/>
+              <line x1="16" y1="3" x2="16" y2="7"/>
+            </svg>
+          </div>
+          <div class="card-title">Планирование разработки нормативных документов</div>
+          <div class="card-hint">План разработки и утверждения документов</div>
+        </a>
+
+        <a class="card" href="pdf/discussion-norm-docs.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div class="card-title">Обсуждение нормативных документов</div>
+          <div class="card-hint">Согласование и обсуждение проектов</div>
+        </a>
+
+        <a class="card" href="pdf/constructor-norm-docs.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"/>
+              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+            </svg>
+          </div>
+          <div class="card-title">Конструктор нормативных документов</div>
+          <div class="card-hint">Сборка и редактирование нормативных документов</div>
+        </a>
+
       </div>
     </section>
 
-    <!-- ГРУППА 3 -->
-    <section>
-      <div class="group-title">Управление и сервисы</div>
+    <!-- ================= ГРУППА 3 ================= -->
+    <section class="group">
+      <div class="group-head">
+        <h2>Управление и сервисы</h2>
+        <p>Подсистемы управления и вспомогательные сервисы</p>
+      </div>
+
       <div class="cards">
-        <a class="card" href="pdf/requirements-management.pdf" target="_blank" rel="noopener">Подсистема управления требованиями</a>
-        <a class="card" href="pdf/digital-cabinets.pdf" target="_blank" rel="noopener">Цифровые кабинеты</a>
-        <a class="card" href="pdf/kassistant.pdf" target="_blank" rel="noopener">кАссист</a>
+
+        <a class="card" href="pdf/requirements-management.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="8" y="2" width="8" height="4" rx="1"/>
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <polyline points="9 13 11 15 15 11"/>
+            </svg>
+          </div>
+          <div class="card-title">Подсистема управления требованиями</div>
+          <div class="card-hint">Сбор, хранение и трассировка требований</div>
+        </a>
+
+        <a class="card" href="pdf/digital-cabinets.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+          </div>
+          <div class="card-title">Цифровые кабинеты</div>
+          <div class="card-hint">Личные кабинеты пользователей и роли</div>
+        </a>
+
+        <a class="card" href="pdf/kassistant.pdf" target="_blank" rel="noopener">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 14v-2a8 8 0 0 1 16 0v2"/>
+              <rect x="2" y="14" width="4" height="6" rx="1.5"/>
+              <rect x="18" y="14" width="4" height="6" rx="1.5"/>
+            </svg>
+          </div>
+          <div class="card-title">кАссист</div>
+          <div class="card-hint">Интеллектуальный помощник пользователя</div>
+        </a>
+
       </div>
     </section>
 
   </div>
+
+  <p class="note">
+    Если документ не открывается, проверьте, что он загружен в папку <code>pdf</code> репозитория,
+    а имя файла совпадает со ссылкой в этой странице.
+  </p>
+
 </div>
 
 <script>
-  /* плавающие иконки — без изменений */
+  /* ---------- Фон: плавающие SVG-фигуры ---------- */
   const bg = document.getElementById('floatingBg');
-  const icons = ['📄','📝','📋','📑','📃','🗒️','🖊️','✏️','🖋️','🖇️','📊','📈','📉','🗂️','📁','📐'];
-  for (let i = 0; i < 22; i++) {
+
+  const shapes = [
+    // Документ
+    `<svg viewBox="0 0 40 50" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M6 3 H26 L34 11 V47 H6 Z"/>
+       <path d="M26 3 V11 H34"/>
+       <line x1="12" y1="20" x2="28" y2="20"/>
+       <line x1="12" y1="27" x2="28" y2="27"/>
+       <line x1="12" y1="34" x2="22" y2="34"/>
+     </svg>`,
+    // Ручка
+    `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M6 34 L10 24 L28 6 L34 12 L16 30 Z"/>
+       <line x1="28" y1="6" x2="34" y2="12"/>
+       <line x1="10" y1="24" x2="16" y2="30"/>
+     </svg>`,
+    // Стопка бумаг
+    `<svg viewBox="0 0 44 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <rect x="4" y="6" width="30" height="38" rx="2"/>
+       <line x1="10" y1="16" x2="28" y2="16"/>
+       <line x1="10" y1="23" x2="28" y2="23"/>
+       <line x1="10" y1="30" x2="22" y2="30"/>
+     </svg>`,
+    // Блок-схема
+    `<svg viewBox="0 0 48 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <rect x="2" y="2" width="16" height="10" rx="2"/>
+       <rect x="30" y="2" width="16" height="10" rx="2"/>
+       <rect x="16" y="26" width="16" height="10" rx="2"/>
+       <path d="M10 12 V20 H38 V12"/>
+       <line x1="24" y1="20" x2="24" y2="26"/>
+     </svg>`,
+    // Лист с таблицей
+    `<svg viewBox="0 0 40 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <rect x="4" y="4" width="32" height="40" rx="2"/>
+       <line x1="4" y1="16" x2="36" y2="16"/>
+       <line x1="4" y1="28" x2="36" y2="28"/>
+       <line x1="20" y1="16" x2="20" y2="44"/>
+     </svg>`
+  ];
+
+  const COUNT = 18;
+  for (let i = 0; i < COUNT; i++) {
     const el = document.createElement('div');
     el.className = 'float-item';
-    el.textContent = icons[Math.floor(Math.random() * icons.length)];
-    el.style.left = (Math.random() * 95) + 'vw';
-    el.style.top  = (Math.random() * 95) + 'vh';
-    el.style.fontSize = (26 + Math.random() * 34) + 'px';
-    el.style.animationDuration = (9 + Math.random() * 10) + 's';
+    el.innerHTML = shapes[Math.floor(Math.random() * shapes.length)];
+
+    el.style.left = (Math.random() * 92) + 'vw';
+    el.style.top  = (Math.random() * 92) + 'vh';
+    el.style.width = (30 + Math.random() * 34) + 'px';
+    el.style.color = 'rgba(2, 132, 199, ' + (0.10 + Math.random() * 0.16).toFixed(2) + ')';
+    el.style.animationDuration = (10 + Math.random() * 10) + 's';
     el.style.animationDelay = (-Math.random() * 15) + 's';
-    el.style.opacity = (0.15 + Math.random() * 0.25).toFixed(2);
+
     bg.appendChild(el);
   }
 </script>
