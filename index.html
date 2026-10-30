@@ -5,55 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Схемы бизнес-процессов</title>
 <style>
-  * { box-sizing: border-box; }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    /* Голубо-белый градиентный фон */
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
     background: linear-gradient(135deg, #e0f2fe 0%, #ffffff 45%, #bae6fd 100%);
     background-attachment: fixed;
-    overflow-x: hidden;
     position: relative;
-    padding: 40px 20px 80px;
+    padding: 50px 24px 90px;
   }
 
-  /* ---------- Плавающие иконки (схемы, ручки, бумажки) ---------- */
+  /* плавающие иконки */
   #floatingBg {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;   /* чтобы не мешали кликать по кнопкам */
+    position: fixed; inset: 0;
+    pointer-events: none;
     z-index: 0;
     overflow: hidden;
   }
-
   .float-item {
     position: absolute;
     user-select: none;
-    filter: drop-shadow(0 3px 6px rgba(14, 165, 233, 0.25));
-    animation-name: floaty;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
+    filter: drop-shadow(0 3px 6px rgba(14,165,233,.25));
+    animation: floaty ease-in-out infinite;
     will-change: transform;
   }
-
   @keyframes floaty {
-    0%   { transform: translate(0, 0) rotate(0deg); }
-    25%  { transform: translate(25px, -35px) rotate(12deg); }
-    50%  { transform: translate(-20px, 25px) rotate(-10deg); }
-    75%  { transform: translate(30px, 15px) rotate(6deg); }
-    100% { transform: translate(0, 0) rotate(0deg); }
+    0%,100% { transform: translate(0,0) rotate(0deg); }
+    25%     { transform: translate(25px,-35px) rotate(12deg); }
+    50%     { transform: translate(-20px,25px) rotate(-10deg); }
+    75%     { transform: translate(30px,15px) rotate(6deg); }
   }
 
-  /* ---------- Контент ---------- */
   .container {
-    position: relative;
-    z-index: 1;
+    position: relative; z-index: 1;
     max-width: 1100px;
     margin: 0 auto;
   }
@@ -61,119 +46,146 @@
   h1 {
     text-align: center;
     color: #075985;
-    font-size: clamp(28px, 5vw, 46px);
+    font-size: clamp(30px, 5vw, 48px);
     font-weight: 800;
-    letter-spacing: 0.5px;
-    margin: 20px 0 50px;
-    text-shadow: 0 2px 8px rgba(255, 255, 255, 0.9);
+    margin-bottom: 14px;
+    text-shadow: 0 2px 8px rgba(255,255,255,.9);
   }
-
-  .buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 18px;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px 28px;
-    min-height: 60px;
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid #7dd3fc;
-    border-radius: 16px;
-    color: #0369a1;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 1.3;
+  .subtitle {
     text-align: center;
+    color: #0c4a6e;
+    opacity: .7;
+    margin-bottom: 48px;
+    font-size: 16px;
+  }
+
+  /* контейнер всех групп */
+  .groups {
+    display: grid;
+    gap: 44px;
+  }
+
+  .group-title {
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #0284c7;
+    margin-bottom: 16px;
+    padding-left: 4px;
+  }
+
+  /* Сетка карточек: авто-адаптив */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 14px;
+    min-height: 130px;
+    padding: 22px 24px;
+    background: rgba(255,255,255,.82);
+    border: 1px solid rgba(125,211,252,.7);
+    border-radius: 18px;
+    color: #0369a1;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
     text-decoration: none;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(14, 165, 233, 0.18);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    transition: all 0.25s ease;
-    max-width: 340px;
+    box-shadow: 0 6px 20px rgba(14,165,233,.13);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform .25s ease, box-shadow .25s ease, background .25s ease, color .25s ease;
   }
 
-  .btn:hover {
+  .card::after {
+    content: 'Открыть PDF →';
+    font-size: 12px;
+    font-weight: 600;
+    color: #38bdf8;
+    letter-spacing: .03em;
+  }
+
+  .card:hover {
     background: #0284c7;
-    color: #ffffff;
     border-color: #0284c7;
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 12px 26px rgba(2, 132, 199, 0.35);
+    color: #fff;
+    transform: translateY(-5px);
+    box-shadow: 0 14px 30px rgba(2,132,199,.32);
   }
+  .card:hover::after { color: #e0f2fe; }
 
-  .btn:active {
-    transform: translateY(-1px) scale(1);
-    box-shadow: 0 6px 14px rgba(2, 132, 199, 0.3);
+  .card:active { transform: translateY(-2px); }
+
+  @media (max-width: 520px) {
+    .cards { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- Контейнер для плавающих иконок (заполняется скриптом) -->
 <div id="floatingBg"></div>
 
 <div class="container">
   <h1>Схемы бизнес-процессов</h1>
+  <p class="subtitle">Выберите раздел, чтобы открыть PDF-схему</p>
 
-  <div class="buttons">
-    <!--
-      ============================================================
-        КАК ПОДКЛЮЧИТЬ PDF:
-        файл PDF кладёте в папку "pdf" рядом с этим index.html
-        и указываете путь в href="pdf/имя_файла.pdf"
-        target="_blank" — открывает PDF в новой вкладке.
-      ============================================================
-    -->
-    <a class="btn" href="pdf/bank-documents.pdf"         target="_blank" rel="noopener">Банк документов</a>
-    <a class="btn" href="pdf/arm-admin-funds.pdf"        target="_blank" rel="noopener">АРМ администратора фондов</a>
-    <a class="btn" href="pdf/subsystem-funds.pdf"        target="_blank" rel="noopener">Подсистема ведения фондов</a>
-    <a class="btn" href="pdf/monitoring.pdf"             target="_blank" rel="noopener">Мониторинг Системы</a>
-    <a class="btn" href="pdf/arm-nsi.pdf"                target="_blank" rel="noopener">Подсистема управления нормативно-справочной информацией</a>
-    <a class="btn" href="pdf/planning-norm-docs.pdf"     target="_blank" rel="noopener">Планирование разработки нормативных документов</a>
-    <a class="btn" href="pdf/discussion-norm-docs.pdf"   target="_blank" rel="noopener">Обсуждение нормативных документов</a>
-    <a class="btn" href="pdf/requirements-management.pdf" target="_blank" rel="noopener">Подсистема управления требованиями</a>
-    <a class="btn" href="pdf/constructor-norm-docs.pdf"  target="_blank" rel="noopener">Конструктор нормативных документов</a>
-    <a class="btn" href="pdf/kassistant.pdf"             target="_blank" rel="noopener">кАссист</a>
-    <a class="btn" href="pdf/digital-cabinets.pdf"       target="_blank" rel="noopener">Цифровые кабинеты</a>
+  <div class="groups">
+
+    <!-- ГРУППА 1 -->
+    <section>
+      <div class="group-title">Фонды</div>
+      <div class="cards">
+        <a class="card" href="pdf/bank-documents.pdf" target="_blank" rel="noopener">Банк документов</a>
+        <a class="card" href="pdf/arm-admin-funds.pdf" target="_blank" rel="noopener">АРМ администратора фондов</a>
+        <a class="card" href="pdf/subsystem-funds.pdf" target="_blank" rel="noopener">Подсистема ведения фондов</a>
+        <a class="card" href="pdf/monitoring.pdf" target="_blank" rel="noopener">Мониторинг Системы</a>
+      </div>
+    </section>
+
+    <!-- ГРУППА 2 -->
+    <section>
+      <div class="group-title">Нормативные документы</div>
+      <div class="cards">
+        <a class="card" href="pdf/arm-nsi.pdf" target="_blank" rel="noopener">Подсистема управления нормативно-справочной информацией</a>
+        <a class="card" href="pdf/planning-norm-docs.pdf" target="_blank" rel="noopener">Планирование разработки нормативных документов</a>
+        <a class="card" href="pdf/discussion-norm-docs.pdf" target="_blank" rel="noopener">Обсуждение нормативных документов</a>
+        <a class="card" href="pdf/constructor-norm-docs.pdf" target="_blank" rel="noopener">Конструктор нормативных документов</a>
+      </div>
+    </section>
+
+    <!-- ГРУППА 3 -->
+    <section>
+      <div class="group-title">Управление и сервисы</div>
+      <div class="cards">
+        <a class="card" href="pdf/requirements-management.pdf" target="_blank" rel="noopener">Подсистема управления требованиями</a>
+        <a class="card" href="pdf/digital-cabinets.pdf" target="_blank" rel="noopener">Цифровые кабинеты</a>
+        <a class="card" href="pdf/kassistant.pdf" target="_blank" rel="noopener">кАссист</a>
+      </div>
+    </section>
+
   </div>
 </div>
 
 <script>
-  /* ===== Генерация плавающих иконок: схемы, ручки, бумажки ===== */
+  /* плавающие иконки — без изменений */
   const bg = document.getElementById('floatingBg');
-
-  const icons = [
-    '📄', '📝', '📋', '📑', '📃', '🗒️',   // бумажки / документы
-    '🖊️', '✏️', '🖋️', '🖇️',                // ручки / канцелярия
-    '📊', '📈', '📉', '🗂️', '📁', '📐'      // схемы / графики / папки
-  ];
-
-  const COUNT = 22; // сколько иконок летает на фоне
-
-  for (let i = 0; i < COUNT; i++) {
+  const icons = ['📄','📝','📋','📑','📃','🗒️','🖊️','✏️','🖋️','🖇️','📊','📈','📉','🗂️','📁','📐'];
+  for (let i = 0; i < 22; i++) {
     const el = document.createElement('div');
     el.className = 'float-item';
     el.textContent = icons[Math.floor(Math.random() * icons.length)];
-
-    // случайная позиция
     el.style.left = (Math.random() * 95) + 'vw';
     el.style.top  = (Math.random() * 95) + 'vh';
-
-    // случайный размер
     el.style.fontSize = (26 + Math.random() * 34) + 'px';
-
-    // случайная скорость и задержка анимации
     el.style.animationDuration = (9 + Math.random() * 10) + 's';
-    el.style.animationDelay    = (-Math.random() * 15) + 's';
-
-    // лёгкая прозрачность, чтобы не отвлекали
+    el.style.animationDelay = (-Math.random() * 15) + 's';
     el.style.opacity = (0.15 + Math.random() * 0.25).toFixed(2);
-
     bg.appendChild(el);
   }
 </script>
