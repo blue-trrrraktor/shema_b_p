@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Получить подсказку</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 25%, #24243e 50%, #6a2c70 75%, #b83b5e 100%);
+    background-size: 400% 400%;
+    animation: bgShift 25s ease infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: #fff;
+  }
+
+  @keyframes bgShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 30%, rgba(167,139,250,0.18), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(249,168,212,0.14), transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .orbs {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.45;
+    animation: floatOrb 22s ease-in-out infinite;
+  }
+
+  .orb:nth-child(1) {
+    width: 400px; height: 400px;
+    background: #a78bfa;
+    top: -100px; left: -100px;
+  }
+  .orb:nth-child(2) {
+    width: 350px; height: 350px;
+    background: #f9a8d4;
+    bottom: -100px; right: -50px;
+    animation-delay: -7s;
+  }
+  .orb:nth-child(3) {
+    width: 300px; height: 300px;
+    background: #60a5fa;
+    top: 40%; left: 50%;
+    animation-delay: -14s;
+  }
+
+  @keyframes floatOrb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(80px, -60px) scale(1.1); }
+    66% { transform: translate(-60px, 80px) scale(0.9); }
+  }
+
+  .planes {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .plane {
+    position: absolute;
+    top: var(--top);
+    left: -80px;
+    width: var(--size);
+    height: var(--size);
+    opacity: 0;
+    animation: drift var(--dur) linear var(--delay) infinite;
+    filter: drop-shadow(0 0 10px rgba(200,180,255,0.4));
+  }
+
+  .plane svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  @keyframes drift {
+    0% {
+      transform: translate(0, 0) rotate(var(--rot));
+      opacity: 0;
+    }
+    8% { opacity: var(--op); }
+    50% {
+      transform: translate(50vw, var(--dy-mid)) rotate(calc(var(--rot) + 20deg));
+    }
+    92% { opacity: var(--op); }
+    100% {
+      transform: translate(calc(100vw + 120px), var(--dy)) rotate(var(--rot));
+      opacity: 0;
+    }
+  }
+
+  .center {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .title {
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 6px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+    text-align: center;
+    padding-left: 6px;
+  }
+
+  .btn-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  .btn-glow {
+    position: absolute;
+    inset: -30px;
+    background: radial-gradient(circle, rgba(167,139,250,0.55), transparent 70%);
+    filter: blur(24px);
+    animation: pulse 3.5s ease-in-out infinite;
+    pointer-events: none;
+    border-radius: 50%;
+    z-index: -1;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+
+  .hint-btn {
+    position: relative;
+    padding: 20px 52px;
+    font-size: clamp(16px, 2vw, 20px);
+    font-family: Georgia, serif;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(167,139,250,0.25), rgba(249,168,212,0.25));
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 999px;
+    cursor: pointer;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.4s ease,
+                letter-spacing 0.4s ease;
+    box-shadow: 0 10px 40px rgba(167,139,250,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.25);
+    letter-spacing: 1px;
+  }
+
+  .hint-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(167,139,250,0.5), rgba(249,168,212,0.5));
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: -1;
+  }
+
+  .hint-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    transition: left 0.7s ease;
+    pointer-events: none;
+  }
+
+  .hint-btn:hover {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 18px 55px rgba(167,139,250,0.55),
+                inset 0 1px 0 rgba(255,255,255,0.4);
+    letter-spacing: 2.5px;
+  }
+
+  .hint-btn:hover::before { opacity: 1; }
+  .hint-btn:hover::after { left: 100%; }
+
+  .hint-btn:active { transform: translateY(-1px) scale(1.01); }
+  .hint-btn:disabled { cursor: wait; opacity: 0.6; }
+
+  .flyer {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 50;
+    pointer-events: none;
+    filter: drop-shadow(0 0 20px rgba(200,180,255,0.8));
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+
+  .flyer svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    pointer-events: none;
+    perspective: 1200px;
+    padding: 20px;
+  }
+
+  .card {
+    max-width: min(640px, 92vw);
+    padding: clamp(36px, 5vw, 56px) clamp(32px, 6vw, 72px);
+    background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+    backdrop-filter: blur(30px) saturate(150%);
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 32px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(255,255,255,0.05) inset,
+                0 1px 0 rgba(255,255,255,0.3) inset;
+    color: #fff;
+    font-size: clamp(20px, 3.2vw, 30px);
+    line-height: 1.5;
+    text-align: center;
+    font-family: Georgia, serif;
+    letter-spacing: 0.3px;
+    opacity: 0;
+    transform: scale(0.4) rotateX(50deg);
+    transition: transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.5s ease;
+    pointer-events: none;
+    position: relative;
+    text-shadow: 0 2px 20px rgba(167,139,250,0.4);
+    overflow-wrap: break-word;
+  }
+
+  .card.show {
+    opacity: 1;
+    transform: scale(1) rotateX(0);
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(167,139,250,0.6), rgba(249,168,212,0.3), rgba(167,139,250,0.6));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .card-hint {
+    display: block;
+    margin-top: 24px;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0.35;
+    font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+    padding-left: 4px;
+  }
+
+  @media (max-width: 600px) {
+    .hint-btn { padding: 16px 36px; }
+    .orb { filter: blur(60px); }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="planeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#e9dcff"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="planeGradPink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#ffe0f0"/>
+      <stop offset="100%" stop-color="#f9a8d4"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="orbs">
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+</div>
+
+<div class="planes" id="planes"></div>
+
+<div class="center">
+  <div class="title">Шёпот вселенной</div>
+  <div class="btn-wrap">
+    <div class="btn-glow"></div>
+    <button id="hintBtn" class="hint-btn">Получить подсказку</button>
+  </div>
+</div>
+
+<div class="overlay">
+  <div class="card" id="card">
+    <span id="phrase"></span>
+    <span class="card-hint">нажми, чтобы закрыть</span>
+  </div>
+</div>
+
+<script>
+  const phrases = [
+    `нашарились`,
+    `автоматчикам простительно`,
+    `У меня стратегия. У меня тактика`,
+    `коэффициент конкордации единица`,
+    `как же ебет юность`,
+    `расенгааааан`,
+    `Да ты права`,
+    `спасибо…`,
+    `ладно`,
+    `я сейчас упаду и умру`,
+    `Ты ей слово она тебе звук "у"`,
+    `Сергей Евгеньевич! Да, спасибо, Сергей Евгеньевич!`,
+    `идем катать?`,
+    `кокакола!!!`,
+    `ваша заявка в статусе пупупу`,
+    `всё что угодно кроме работы`,
+    `извинитесь`,
+    `не выразительно`,
+    `привет ленин`,
+    `ДОБРЫЙ ВЕЧЕР ТАМАРА ЛЕОНИДОВНА`,
+    `блябляяяяблябялбялябляяяя`,
+    `идем писеть`,
+    `пятиминутная готовность`,
+    `я сейчас упаду и буду ебашиться башкой?`,
+    `а где трусы потеряла?`,
+    `бадью эспрессо-тоника пожалуйста`,
+    `на мосту стою прохожий на ебёна мать похожий`,
+    `сукаебанскаябляяяя чежделать`,
+    `сидит… Че сидит? Че ждет?`,
+    `двухминутная готовность`,
+    `наша будет`,
+    `а мы пойдем в макдонавс кушать вредную булку?`,
+    `мысля пропала`,
+    `вечером брифинг`,
+    `еду еду еду еду (а дальше я не помню)`,
+    `дорогая вселенная пожалуйста-пожалуйста`,
+    `куууст! кустяра ебаный!!!`,
+    `ваще не раздуплиться`,
+    `ай вондер иф ю ноу`,
+    `бля ваще мозг не работает`,
+    `это лично от меня щас если что`,
+    `пусть будет`,
+    `и че они мне сделают? Уволят?`,
+    `расчехляемся`,
+    `шлюхи до-нат-ны-е`,
+    `Го?`,
+    `декомпозируй`,
+    `от меня конкретно щас что требуется`,
+    `богдана не любят`,
+    `богдана любят`,
+    `уииииии`,
+    `смешно тебе?`,
+    `всех победила`,
+    `это стратегия или уже тактика?`,
+    `хороший и отличный автоматчик`,
+    `провели сись анализ`,
+    `пошла в рейдорский захват цеха`,
+    `всем привет дорогие подписочники!!!`,
+    `в паровозе`,
+    `а пока терпится`,
+    `всем привет я Настя`,
+    `собрала коллекцию сиксевенов`,
+    `нужен эчпочмак`,
+    `полная досисьмиля`,
+    `чакчаковая ломка`,
+    `давай тарантайка`,
+    `у меня агония`
+  ];
+
+  const planesLayer = document.getElementById('planes');
+  const btn = document.getElementById('hintBtn');
+  const card = document.getElementById('card');
+  const phraseEl = document.getElementById('phrase');
+
+  // Ambient planes
+  const AMBIENT_COUNT = 16;
+  const grads = ['url(#planeGrad)', 'url(#planeGradPink)'];
+
+  for (let i = 0; i < AMBIENT_COUNT; i++) {
+    const plane = document.createElement('div');
+    plane.className = 'plane';
+
+    const size = 22 + Math.random() * 44;
+    const rot = -20 + Math.random() * 40;
+    const dyMid = -15 + Math.random() * 30;
+    const dy = -25 + Math.random() * 50;
+    const dur = 18 + Math.random() * 25;
+    const delay = -Math.random() * dur;
+    const op = 0.3 + Math.random() * 0.55;
+    const fill = grads[Math.floor(Math.random() * grads.length)];
+
+    plane.style.setProperty('--size', size + 'px');
+    plane.style.setProperty('--top', (Math.random() * 100) + '%');
+    plane.style.setProperty('--rot', rot + 'deg');
+    plane.style.setProperty('--dy-mid', dyMid + 'vh');
+    plane.style.setProperty('--dy', dy + 'vh');
+    plane.style.setProperty('--dur', dur + 's');
+    plane.style.setProperty('--delay', delay + 's');
+    plane.style.setProperty('--op', op);
+
+    plane.innerHTML = `<svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z" fill="${fill}"/></svg>`;
+    planesLayer.appendChild(plane);
+  }
+
+  let busy = false;
+
+  function getHint() {
+    if (busy) return;
+    busy = true;
+    btn.disabled = true;
+
+    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+    phraseEl.textContent = phrase;
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    // Random start edge
+    const edges = [
+      { x: -100, y: h * (0.2 + Math.random() * 0.6), rot: 45 + Math.random() * 30 },
+      { x: w + 100, y: h * (0.2 + Math.random() * 0.6), rot: -135 + Math.random() * 30 },
+      { x: w * (0.2 + Math.random() * 0.6), y: -100, rot: 135 + Math.random() * 30 },
+      { x: w * (0.2 + Math.random() * 0.6), y: h + 100, rot: -45 + Math.random() * 30 },
+    ];
+    const start = edges[Math.floor(Math.random() * edges.length)];
+
+    const flyer = document.createElement('div');
+    flyer.className = 'flyer';
+    flyer.innerHTML = `<svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z" fill="url(#planeGrad)"/></svg>`;
+    flyer.style.left = start.x + 'px';
+    flyer.style.top = start.y + 'px';
+    flyer.style.transform = `translate(-50%, -50%) scale(0.8) rotate(${start.rot}deg)`;
+
+    document.body.appendChild(flyer);
+
+    // Fly toward center
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        flyer.style.transition = 'left 1.15s cubic-bezier(0.45, 0, 0.2, 1), top 1.15s cubic-bezier(0.45, 0, 0.2, 1), transform 1.15s cubic-bezier(0.45, 0, 0.2, 1), opacity 0.4s ease';
+        flyer.style.left = cx + 'px';
+        flyer.style.top = cy + 'px';
+        flyer.style.transform = `translate(-50%, -50%) scale(2.6) rotate(${start.rot + 360}deg)`;
+      });
+    });
+
+    // Arrival — dissolve plane, reveal card
+    setTimeout(() => {
+      flyer.style.transition = 'transform 0.55s ease, opacity 0.55s ease';
+      flyer.style.transform = `translate(-50%, -50%) scale(4.5) rotate(${start.rot + 540}deg)`;
+      flyer.style.opacity = '0';
+
+      card.classList.add('show');
+      busy = false;
+      btn.disabled = false;
+    }, 1150);
+
+    setTimeout(() => flyer.remove(), 1750);
+  }
+
+  btn.addEventListener('click', () => {
+    if (card.classList.contains('show')) {
+      card.classList.remove('show');
+      return;
+    }
+    getHint();
+  });
+
+  card.addEventListener('click', () => card.classList.remove('show'));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') card.classList.remove('show');
+  });
+</script>
+
+</body>
+</html>
